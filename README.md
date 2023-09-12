@@ -7,4 +7,40 @@ Effective public health surveillance requires consistent monitoring of disease s
 
 # Instruction
 1) Install requirements.txt
-2) 
+## Training PetBERT (MLM/NSP)
+**n.b** ensure your dataset is in csv format with the text column named 'text'
+
+Default Parameters:
+
+  Epochs : Early Stopping Enabled,
+  Batch_size = 32,
+  
+  mlm_probability = 0.25, 
+  
+  weight_decay=0.01, 
+  
+  initial_learning_rate = 2e-5
+  
+
+```
+python PetBERT_trainer.py --base_model bert-base-uncased --train_set data/train.csv --eval_set data/eval.csv 
+```
+
+Model will be saved in models/PetBERT
+
+## Training Binary Classifiers
+Here binary classifiers are trained based on the datasets available within the data/binary folder. If a train and test set are present a binary classifier will be trained and saved to model/binary
+
+```
+python binary_classification.py --pretrained_model models/PetBERT --dataset_dir data/binary/
+```
+
+## Merging Datasets
+```
+dataset_merge.py --binary_model_folder data/binary --save_dir data/PetBERT_ICD/combined
+```
+
+## Training Multi Label Classifier (PetBERT-ICD)
+```
+PetBERT_ICD_Trainer.py --binary_model_folder data/binary --save_dir data/PetBERT_ICD/combined
+```
