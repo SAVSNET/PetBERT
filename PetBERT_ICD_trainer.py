@@ -20,19 +20,19 @@ parser = argparse.ArgumentParser(description="Description of your program")
 parser.add_argument(
     "--pretrained_model",
     help="Pretrained Model",
-    default="SAVSNET/PetBERT",
+    default="models/PetBERT/",
 )
 
 parser.add_argument(
     "--train_set",
     help="Pretrained Model",
-    default="data/train.csv",
+    default="data/PetBERT_ICD/combined/Train.csv",
 )
 
 parser.add_argument(
     "--eval_set",
     help="Pretrained Model",
-    default="data/eval.csv",
+    default="data/PetBERT_ICD/combined/Test.csv",
 )
 
 
@@ -103,7 +103,7 @@ model = AutoModelForSequenceClassification.from_pretrained(
 
 
 args = TrainingArguments(
-    output_dir=f"models/'args['model_name']",  # output directory
+    output_dir=f"models/PetBERT-ICD",  # output directory
     num_train_epochs=10,  # total number of training epochs
     per_device_train_batch_size=16,  # batch size per device during training
     per_device_eval_batch_size=16,  # batch size for evaluation
@@ -164,4 +164,4 @@ if args['test_set'] != None:
 
 
     df = pd.DataFrame(report).transpose()
-    df.to_csv("models/" + str(model_name) + "/report.csv")
+    df.to_csv("models/PetBERT-ICD/report.csv")
