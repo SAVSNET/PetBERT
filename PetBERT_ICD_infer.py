@@ -21,7 +21,8 @@ tokenizer = AutoTokenizer.from_pretrained(
     latest_checkpoint, padding=True, truncation=True, max_length=512, problem_type="multi_label_classification")
 model = AutoModelForSequenceClassification.from_pretrained(str(
     latest_checkpoint), local_files_only=True, problem_type="multi_label_classification", num_labels=20)
-config = AutoConfig.from_pretrained(latest_checkpoint+'/config.json', local_files_only=True)
+config = AutoConfig.from_pretrained(
+    latest_checkpoint+'/config.json', local_files_only=True)
 
 classifier = TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
@@ -60,25 +61,14 @@ trainer = Trainer(
 
 predictions = trainer.predict(tokenized_dataset)
 
-# labels = np.argmax(predictions.predictions, axis=-1)
-torch_logits = torch.from_numpy(predictions.predictions).to(torch.float32)
-sigmoid = torch.nn.Sigmoid()
-probs = sigmoid(torch_logits.squeeze().cpu())
-
-datasets = datasets.to_pandas()
-
-results = []
 threshold_val = float(args['threshold'])
-for narrative in probs.numpy():
-    value = np.where(narrative >= threshold_val)[0]
-    labels = [label_dictionary[i] for i in value]
-    results.append(labels)
+predictions_array = (predictions.predictions >= threshold_val).astype(int)
+labels_id = model.config.id2label
+results = [[labels_id[i] for i, value in enumerate(narrative) if value == 1]
+           for narrative in predictions_array]
 
+results_df = pd.DataFrame(results, columns=['ICD_11'])
 
-predictions_array = np.zeros(predictions.predictions.shape)
-predictions_array[np.where(predictions.predictions >= args['threshold'])] = 1
-full_data = pd.DataFrame(predictions_array)
-full_data = full_data.rename(columns=dict(label_dictionary))
-full_data["ICD_11"] = results
-full_data = pd.concat([datasets, full_data], axis=1)
-full_data.to_csv("hpcia_datasets/test_new_icd.csv")
+full_data = pd.concat([datasets['Test'], results_df], axis=1)
+
+full_data.to_csv("data/PetBERT_ICD/final_output/full_dataset_ICD_inference.csv", index=False)
