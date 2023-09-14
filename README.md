@@ -52,3 +52,6 @@ python dataset_merge.py --binary_model_folder data/binary --save_dir data/PetBER
 ```
 python PetBERT_ICD_Trainer.py --binary_model_folder data/binary --save_dir data/PetBERT_ICD/combined
 ```
+
+# Data Availability
+The datasets analysed during the current study are not publicly available due to issues surrounding owner confidentiality. Reasonable requests can be made to the SAVSNET Data Access and Publication Panel (savsnet@liverpool.ac.uk) for researchers who meet the criteria for access to confidential data.
