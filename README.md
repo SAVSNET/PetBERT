@@ -3,7 +3,7 @@
 PetBERT is a masked language model based on the BERT architecture further trained on over 500 million additional words from first-opinion veterinary clinicians from across the UK
 
 
-Huggingface Link: 
+Huggingface Link: https://huggingface.co/SAVSNET/PetBERT
 
 
 ## Abstract
